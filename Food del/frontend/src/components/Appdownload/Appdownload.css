@@ -1,0 +1,50 @@
+
+.app-download {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  text-align: center;
+  margin: 50px auto; /* Add space above and below */
+  padding: 20px;
+}
+
+.app-download p {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px; /* Space between text and buttons */
+}
+
+.app-download-plateforms {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+}
+
+.app-download-plateforms img {
+  width: 180px; /* Adjust size of Play Store & App Store buttons */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.app-download-plateforms img:hover {
+  transform: scale(1.1); /* Slight zoom effect on hover */
+}
+@media (max-width: 768px) {
+  .app-download {
+    padding: 30px 10px;
+    gap: 15px;
+  }
+
+  .app-download p {
+    font-size: 18px;
+  }
+
+  .app-download-plateforms {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .app-download-plateforms img {
+    width: 150px; /* Smaller images for mobile */
+  }
+}
