@@ -1,0 +1,53 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  font-family: outfil;
+}
+.anvebar{
+  display:  flex;
+}
+body{
+  height: 100vh;
+}
+a{
+  text-decoration: none;
+  color: inherit;
+} */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Outfit;
+}
+
+body {
+  height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navebar {
+  display: flex;
+}
+
+.app-content {
+  display: flex; /* Use flexbox to align Sidebar and Routes side by side */
+  height: calc(100vh - 60px); /* Adjust height to fit below the navbar and hr */
+}
+
+/* Add styles for the main content area */
+.main-content {
+  flex: 1; /* Take up remaining space */
+  padding: 20px; /* Add padding for better spacing */
+  overflow-y: auto; /* Add scroll if content overflows */
+}
+.flex-call{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
