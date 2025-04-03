@@ -1,52 +1,75 @@
 
-import express from 'express';
-import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import connectDB from './config/db.js';
-import foodRouter from './routes/foodroute.js';
-import userRout from './routes/userroute.js';
-import 'dotenv/config'
+import express from "express";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import fs from "fs";
+import connectDB from "./config/db.js";
+import foodRouter from "./routes/foodroute.js";
+import userRouter from "./routes/userroute.js";
+import "dotenv/config";
+import cartroute from "./routes/cartroute.js";
 
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// App config
 const app = express();
 const port = process.env.PORT || 4000;
 
-// CORS configuration
-const corsOptions = {
-  origin: 'http://localhost:5173', // Allow requests from this origin
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
-};
-app.use(cors(corsOptions));
+// ✅ Allow multiple origins (Fixes CORS error)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://your-production-domain.com",
+];
 
-// Middleware
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS Not Allowed"));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Serve static files
-app.use("/images", express.static(join(__dirname, 'uploads')));
+// ✅ Ensure Uploads Folder Exists
+const uploadDir = join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
-// DB connection
+// ✅ Serve uploaded images correctly
+app.use("/uploads", express.static(uploadDir));
+
+// ✅ Connect to MongoDB
 connectDB();
 
-// API routes
+// ✅ API Routes
 app.use("/api/food", foodRouter);
-app.use("/api/user",userRout)
+app.use("/api/user", userRouter);
+app.use("/api/cart",cartroute);
 // Default route
 app.get("/", (req, res) => {
   res.send("APIs working");
 });
 
-// Error handling middleware
+// ✅ Improved Error Handling
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: "Internal Server Error" });
+  console.error("Error:", err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
 });
 
-// Start server
+// ✅ Start server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`🚀 Server is running on http://localhost:${port}`);
 });

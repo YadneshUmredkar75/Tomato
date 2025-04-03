@@ -56,7 +56,7 @@ function List() {
         {list.map((item, index) => (
           <div key={index} className="list-table-row">
             <div className="list-table-column">
-              <img src={`${url}/images/${item.image}`} alt={item.name} className="food-image" />
+              <img src={`${url}/uploads/${item.image}`} alt={item.name} className="food-image" />
             </div>
             <div className="list-table-column">{item.name}</div>
             <div className="list-table-column">{item.category}</div>

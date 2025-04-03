@@ -5,7 +5,7 @@ import './Cart.css';
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-  const { cartitem, food_list, removeFromcart,getTotleCartAmount } = useContext(StoreContext);
+  const { cartitem, food_list, removeFromcart,getTotleCartAmount ,url} = useContext(StoreContext);
  const naveigate = useNavigate();
   return (
     <div className='cart'>
@@ -20,24 +20,24 @@ function Cart() {
         </div>
         <br />
         <hr />
-        {food_list.map((item, index) => {
-          if (cartitem[item._id] > 0) {
-            return (
-              <>
-              <div className="cart-title-item" key={index}>
-                <img src={item.image} alt="" />
-              <p>{item.name}</p>
-              <p>{item.price}</p>
-              <p>{cartitem[item._id]}</p>
-              <p>${item.price * cartitem[item._id]}</p>
-              <p className='cross' onClick={() => removeFromcart(item._id)}>x</p>
-            </div>
-            <hr />
-            </>
-            );
-          }
-          return null;
-        })}
+        {food_list.map((item) => {
+  if (cartitem[item._id] > 0) {
+    return (
+      <React.Fragment key={item._id}> {/* ✅ Added key to Fragment */}
+        <div className="cart-title-item">
+          <img src={`http://localhost:4000/uploads/${item.image}`} alt="" />
+          <p>{item.name}</p>
+          <p>{item.price}</p>
+          <p>{cartitem[item._id]}</p>
+          <p>${item.price * cartitem[item._id]}</p>
+          <p className='cross' onClick={() => removeFromcart(item._id)}>x</p>
+        </div>
+        <hr />
+      </React.Fragment>
+    );
+  }
+  return null;
+})}
       </div>
       <div className="cart-bottom">
         <div className="cart-totle">

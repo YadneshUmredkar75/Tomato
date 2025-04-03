@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../context/StoreContext";
@@ -8,41 +8,40 @@ import axios from "axios";
 function LoginPopup({ setShowLogin }) {
   const { url, setToken } = useContext(StoreContext);
   const [currstate, setCurrstate] = useState("Login");
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
 
-  // Fix: Use onChange instead of onClickHandler
+  // ✅ Reset state on popup open
+  const [data, setData] = useState({ name: "", email: "", password: "" });
+
+  // ✅ Reset input fields when the popup opens
+  useEffect(() => {
+    setData({ name: "", email: "", password: "" });
+  }, [setShowLogin]);
+
+  // ✅ Handle input change
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Submit form data
+  // ✅ Handle form submission
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    let newUrl = url;
 
-    if (currstate === "Login") {
-      newUrl += "/api/user/login";
-    } else {
-      newUrl += "/api/user/register";
-    }
+    let newUrl = currstate === "Login" ? `${url}/api/user/login` : `${url}/api/user/register`;
 
     try {
       const response = await axios.post(newUrl, data);
 
-      if (response.data.success) {
-        setShowLogin(false);
-      } else {
-        alert(response.data.message);
-      }
-
       if (response.data.token) {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
+
+        // ✅ Clear input fields after login
+        setData({ name: "", email: "", password: "" });
+
+        setShowLogin(false);
+      } else {
+        alert(response.data.message);
       }
     } catch (error) {
       console.error("Error during authentication:", error);
@@ -50,8 +49,9 @@ function LoginPopup({ setShowLogin }) {
     }
   };
 
-  // Close the login popup
+  // ✅ Close popup & reset fields
   const handleClose = () => {
+    setData({ name: "", email: "", password: "" }); // Reset fields
     setShowLogin(false);
   };
 
@@ -66,8 +66,8 @@ function LoginPopup({ setShowLogin }) {
         <div className="login-popup-inputs">
           {currstate !== "Login" && (
             <input
-              onChange={onChangeHandler} // Fix applied
-              value={data.name}
+              onChange={onChangeHandler}
+              value={data.name} // ✅ Controlled input
               type="text"
               placeholder="Your name"
               name="name"
@@ -75,20 +75,22 @@ function LoginPopup({ setShowLogin }) {
             />
           )}
           <input
-            onChange={onChangeHandler} // Fix applied
-            value={data.email}
-            type="text"
+            onChange={onChangeHandler}
+            value={data.email} // ✅ Controlled input
+            type="email"
             placeholder="Your email"
             name="email"
             required
+            autoComplete="off" // ✅ Prevents autofill
           />
           <input
-            onChange={onChangeHandler} // Fix applied
-            value={data.password}
+            onChange={onChangeHandler}
+            value={data.password} // ✅ Controlled input
             type="password"
             placeholder="Password"
             name="password"
             required
+            autoComplete="new-password" // ✅ Prevents browser autofill
           />
         </div>
 
